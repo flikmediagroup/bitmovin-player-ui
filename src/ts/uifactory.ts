@@ -3,11 +3,13 @@ import { SettingsPanelPage } from './components/settingspanelpage';
 import { SettingsPanelItem } from './components/settingspanelitem';
 import { VideoQualitySelectBox } from './components/videoqualityselectbox';
 import { PlaybackSpeedSelectBox } from './components/playbackspeedselectbox';
+import { AudioTrackListBox } from './components/audiotracklistbox';
 import { AudioTrackSelectBox } from './components/audiotrackselectbox';
 import { AudioQualitySelectBox } from './components/audioqualityselectbox';
 import { SettingsPanel } from './components/settingspanel';
 import { SubtitleSettingsPanelPage } from './components/subtitlesettings/subtitlesettingspanelpage';
 import { SettingsPanelPageOpenButton } from './components/settingspanelpageopenbutton';
+import { SubtitleListBox } from './components/subtitlelistbox';
 import { SubtitleSettingsLabel } from './components/subtitlesettings/subtitlesettingslabel';
 import { SubtitleSelectBox } from './components/subtitleselectbox';
 import { ControlBar } from './components/controlbar';
@@ -162,6 +164,100 @@ export namespace UIFactory {
         PlayerUtils.PlayerState.Prepared,
         PlayerUtils.PlayerState.Paused,
         PlayerUtils.PlayerState.Finished,
+      ],
+    });
+  }
+
+  function modernUIWithSeparateAudioSubtitlesButtons() {
+    let subtitleOverlay = new SubtitleOverlay();
+
+    let settingsPanel = new SettingsPanel({
+      components: [
+        new SettingsPanelPage({
+          components: [
+            new SettingsPanelItem('Video Quality', new VideoQualitySelectBox()),
+            new SettingsPanelItem('Speed', new PlaybackSpeedSelectBox()),
+            new SettingsPanelItem('Audio Quality', new AudioQualitySelectBox()),
+          ],
+        }),
+      ],
+      hidden: true,
+    });
+
+    let subtitleListBox = new SubtitleListBox();
+    let subtitleSettingsPanel = new SettingsPanel({
+      components: [
+        new SettingsPanelPage({
+          components: [
+            new SettingsPanelItem(null, subtitleListBox),
+          ],
+        }),
+      ],
+      hidden: true,
+    });
+
+    let audioTrackListBox = new AudioTrackListBox();
+    let audioTrackSettingsPanel = new SettingsPanel({
+      components: [
+        new SettingsPanelPage({
+          components: [
+            new SettingsPanelItem(null, audioTrackListBox),
+          ],
+        }),
+      ],
+      hidden: true,
+    });
+
+    let controlBar = new ControlBar({
+      components: [
+        audioTrackSettingsPanel,
+        subtitleSettingsPanel,
+        settingsPanel,
+        new Container({
+          components: [
+            new PlaybackTimeLabel({ timeLabelMode: PlaybackTimeLabelMode.CurrentTime, hideInLivePlayback: true }),
+            new SeekBar({ label: new SeekBarLabel() }),
+            new PlaybackTimeLabel({ timeLabelMode: PlaybackTimeLabelMode.TotalTime, cssClasses: ['text-right'] }),
+          ],
+          cssClasses: ['controlbar-top'],
+        }),
+        new Container({
+          components: [
+            new PlaybackToggleButton(),
+            new VolumeToggleButton(),
+            new VolumeSlider(),
+            new Spacer(),
+            new PictureInPictureToggleButton(),
+            new AirPlayToggleButton(),
+            new CastToggleButton(),
+            new VRToggleButton(),
+            new SettingsToggleButton({
+              settingsPanel: audioTrackSettingsPanel,
+              cssClass: 'ui-audiotracksettingstogglebutton',
+            }),
+            new SettingsToggleButton({
+              settingsPanel: subtitleSettingsPanel,
+              cssClass: 'ui-subtitlesettingstogglebutton',
+            }),
+            new SettingsToggleButton({ settingsPanel: settingsPanel }),
+            new FullscreenToggleButton(),
+          ],
+          cssClasses: ['controlbar-bottom'],
+        }),
+      ],
+    });
+
+    return new UIContainer({
+      components: [
+        subtitleOverlay,
+        new BufferingOverlay(),
+        new PlaybackToggleOverlay(),
+        new CastStatusOverlay(),
+        controlBar,
+        new TitleBar(),
+        new RecommendationOverlay(),
+        new Watermark(),
+        new ErrorMessageOverlay(),
       ],
     });
   }
@@ -390,7 +486,7 @@ export namespace UIFactory {
           && context.documentWidth < smallScreenSwitchWidth;
       },
     }, {
-      ui: modernUI(),
+      ui: modernUIWithSeparateAudioSubtitlesButtons(),
       condition: (context: UIConditionContext) => {
         return !context.isAd && !context.adRequiresUi;
       },
