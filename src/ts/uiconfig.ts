@@ -68,6 +68,7 @@ export interface UIConfig {
    * Default: true
    */
   playbackSpeedSelectionEnabled?: boolean;
+  forceLive?: boolean;
   /**
    * Specifies if the player controls including `SettingsPanel` should auto hide when still hovered. This
    * configuration does not apply to mobile platforms. On mobile platforms the `SettingsPanel` is by default
