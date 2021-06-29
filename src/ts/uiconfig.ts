@@ -62,6 +62,7 @@ export interface UIConfig {
    * Default: true
    */
   playbackSpeedSelectionEnabled?: boolean;
+  forceLive?: boolean;
   /**
    * Provide customized errorMessages
    * For an example have a look at {@link ErrorMessageOverlayConfig.messages}
