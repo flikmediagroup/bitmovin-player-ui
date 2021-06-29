@@ -39,6 +39,10 @@ export interface PlaybackTimeLabelConfig extends LabelConfig {
    * Boolean if the label should be hidden in live playback
    */
   hideInLivePlayback?: boolean;
+  /**
+   * look and feel as live while playing VOD
+   */
+  forceLive?: boolean;
 }
 
 /**
@@ -58,6 +62,7 @@ export class PlaybackTimeLabel extends Label<PlaybackTimeLabelConfig> {
       cssClass: 'ui-playbacktimelabel',
       timeLabelMode: PlaybackTimeLabelMode.CurrentAndTotalTime,
       hideInLivePlayback: false,
+      forceLive: false,
     }, this.config);
   }
 
@@ -76,7 +81,7 @@ export class PlaybackTimeLabel extends Label<PlaybackTimeLabelConfig> {
 
     let updateLiveState = () => {
       // Player is playing a live stream when the duration is infinite
-      live = player.isLive();
+      live = config.forceLive || player.isLive();
 
       // Attach/detach live marker class
       if (live) {

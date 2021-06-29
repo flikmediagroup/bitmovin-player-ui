@@ -188,7 +188,7 @@ export namespace UIFactory {
     });
   }
 
-  function modernUIWithSeparateAudioSubtitlesButtons() {
+  function modernUIWithSeparateAudioSubtitlesButtons(config: UIConfig) {
     let subtitleOverlay = new SubtitleOverlay();
 
     let settingsPanel = new SettingsPanel({
@@ -235,10 +235,10 @@ export namespace UIFactory {
         settingsPanel,
         new Container({
           components: [
-            new PlaybackTimeLabel({ timeLabelMode: PlaybackTimeLabelMode.CurrentTime, hideInLivePlayback: true }),
-            new SeekBar({ label: new SeekBarLabel() }),
-            new PlaybackTimeLabel({ timeLabelMode: PlaybackTimeLabelMode.TotalTime, cssClasses: ['text-right'] }),
-          ],
+            new PlaybackTimeLabel({ timeLabelMode: PlaybackTimeLabelMode.CurrentTime, hideInLivePlayback: true, forceLive: config.forceLive }),
+            config.forceLive ? null : new SeekBar({ label: new SeekBarLabel() }),
+            new PlaybackTimeLabel({ timeLabelMode: PlaybackTimeLabelMode.TotalTime, cssClasses: ['text-right'], forceLive: config.forceLive }),
+          ].filter(c => !!c),
           cssClasses: ['controlbar-top'],
         }),
         new Container({
@@ -275,7 +275,9 @@ export namespace UIFactory {
         new CastStatusOverlay(),
         controlBar,
         new TitleBar(),
-        new RecommendationOverlay(),
+        new RecommendationOverlay(
+          config.forceLive ? { components: [] } : {},
+        ),
         new Watermark(),
         new ErrorMessageOverlay(),
       ],
@@ -511,7 +513,7 @@ export namespace UIFactory {
           && context.documentWidth < smallScreenSwitchWidth;
       },
     }, {
-      ui: modernUIWithSeparateAudioSubtitlesButtons(),
+      ui: modernUIWithSeparateAudioSubtitlesButtons(config),
       condition: (context: UIConditionContext) => {
         return !context.isAd && !context.adRequiresUi;
       },
