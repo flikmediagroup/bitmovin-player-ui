@@ -202,34 +202,34 @@ export namespace UIFactory {
       hidden: true,
     });
 
-    // let subtitleListBox = new SubtitleListBox();
-    // let subtitleSettingsPanel = new SettingsPanel({
-    //   components: [
-    //     new SettingsPanelPage({
-    //       components: [
-    //         new SettingsPanelItem(null, subtitleListBox),
-    //       ],
-    //     }),
-    //   ],
-    //   hidden: true,
-    // });
+    let subtitleListBox = new SubtitleListBox();
+    let subtitleSettingsPanel = new SettingsPanel({
+      components: [
+        new SettingsPanelPage({
+          components: [
+            new SettingsPanelItem(null, subtitleListBox),
+          ],
+        }),
+      ],
+      hidden: true,
+    });
 
-    // let audioTrackListBox = new AudioTrackListBox();
-    // let audioTrackSettingsPanel = new SettingsPanel({
-    //   components: [
-    //     new SettingsPanelPage({
-    //       components: [
-    //         new SettingsPanelItem(null, audioTrackListBox),
-    //       ],
-    //     }),
-    //   ],
-    //   hidden: true,
-    // });
+    let audioTrackListBox = new AudioTrackListBox();
+    let audioTrackSettingsPanel = new SettingsPanel({
+      components: [
+        new SettingsPanelPage({
+          components: [
+            new SettingsPanelItem(null, audioTrackListBox),
+          ],
+        }),
+      ],
+      hidden: true,
+    });
 
     let controlBar = new ControlBar({
       components: [
-        // audioTrackSettingsPanel,
-        // subtitleSettingsPanel,
+        audioTrackSettingsPanel,
+        subtitleSettingsPanel,
         settingsPanel,
         new Container({
           components: [
@@ -249,14 +249,14 @@ export namespace UIFactory {
             new AirPlayToggleButton(),
             new CastToggleButton(),
             new VRToggleButton(),
-            // new SettingsToggleButton({
-            //   settingsPanel: audioTrackSettingsPanel,
-            //   cssClass: 'ui-audiotracksettingstogglebutton',
-            // }),
-            // new SettingsToggleButton({
-            //   settingsPanel: subtitleSettingsPanel,
-            //   cssClass: 'ui-subtitlesettingstogglebutton',
-            // }),
+            new SettingsToggleButton({
+              settingsPanel: audioTrackSettingsPanel,
+              cssClass: 'ui-audiotracksettingstogglebutton',
+            }),
+            new SettingsToggleButton({
+              settingsPanel: subtitleSettingsPanel,
+              cssClass: 'ui-subtitlesettingstogglebutton',
+            }),
             new SettingsToggleButton({ settingsPanel: settingsPanel }),
             new FullscreenToggleButton(),
           ],
